@@ -286,7 +286,7 @@ for ti in time_list:
         Bhelp = (tvpot_parcel[2:dim_z]-tvpot[2:dim_z])*(tvpot_parcel[1:dim_z-1]-tvpot[1:dim_z-1])
         indexes = [index for index in range(len(Bhelp)) if Bhelp[index] < 0] 
         nc[yi]=0 if all(indexes)==0 else len(indexes) 
-        surface_cape = True if nc[yi]==3 else False
+        surface_cape = True if nc[yi]>=3 else False
         B_old = 0.;        
         for zlev in range(1,dim_z-1):
 
@@ -296,7 +296,7 @@ for ti in time_list:
             if B>0:
                 tot_cape[yi] = tot_cape[yi] + B
             else:
-                tot_cin[yi]  = tot_cin[yi]  + B #sollte -B to get pos. CIN
+                tot_cin[yi]  = tot_cin[yi]  - B 
             
 
             #if B*B_old<0.: # testing for a change of sign in buoyancy
@@ -340,7 +340,7 @@ for ti in time_list:
                     z_limit_of_conv[yi] = data_in_z[zlev] + epsilon*(data_in_z[zlev+1]-data_in_z[zlev])
 
         #if below_free_convection: cin[yi] = numpy.nan  # no buoyant layer
-
+    numpy.where(nc > 5, tot_cape-scape-cape, cape)
     scape_out[ti,:]    = scape
     cape_out[ti,:]     = cape
     cin_out[ti,:]      = cin
