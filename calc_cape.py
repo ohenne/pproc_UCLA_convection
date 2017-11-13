@@ -46,7 +46,7 @@ data_in_ps_name   = stem+'.ps.nc'  # profile file for the pressure
 y_cross           = int(sys.argv[2])
 
 # the final output filename
-data_out_name     = stem+'.cape.river_y_'+str(y_cross)+'.nc'
+data_out_name     = stem+'.cape.river_y_'+str(y_cross).zfill(3)+'.nc'
 out_filename      = data_out_path+data_out_name
 
 # show plot or save plot?
@@ -80,7 +80,7 @@ data_in_l    = Dataset(data_in_path+data_in_l_name, 'r')
 data_in_time = data_in_t.variables['time']
 
 # extracting the dimensions of the datafile
-dim_x        = data_in_t.dimensions['xt'].size
+dim_x        = 1 #data_in_t.dimensions['xt'].size
 dim_y        = data_in_t.dimensions['yt'].size
 dim_z        = data_in_t.dimensions['zt'].size
 dim_time     = data_in_t.dimensions['time'].size
@@ -94,6 +94,7 @@ except OSError:
 
 data_out     = Dataset(out_filename, 'w', format='NETCDF4')
 xt           = data_out.createDimension('xt',dim_x)
+xt           = y_cross
 yt           = data_out.createDimension('yt',dim_y)
 time         = data_out.createDimension('time', None)
 
@@ -102,16 +103,16 @@ time_out     = data_out.createVariable('time','f8',('time',))
 time_out.units   = 'seconds since 2010-01-01 00:00:00'
 
 # create output variables
-cape_out     = data_out.createVariable('cape', 'f4',('time', 'yt'))
-cin_out      = data_out.createVariable('cin',  'f4',('time', 'yt'))
-tot_cape_out = data_out.createVariable('total cape', 'f4',('time', 'yt'))
-tot_cin_out  = data_out.createVariable('total cin',  'f4',('time', 'yt'))
-scape_out    = data_out.createVariable('scape',  'f4',('time', 'yt'))
-lscape_out   = data_out.createVariable('lscape',  'f4',('time', 'yt'))
-lcl_out      = data_out.createVariable('lcl',  'f4',('time', 'yt'))
-lfc_out      = data_out.createVariable('lfc',  'f4',('time', 'yt'))
-loc_out      = data_out.createVariable('loc',  'f4',('time', 'yt'))
-ncross_out   = data_out.createVariable('ncross',  'f4',('time', 'yt'))
+cape_out     = data_out.createVariable('cape', 'f4',('time', 'yt', 'xt'))
+cin_out      = data_out.createVariable('cin',  'f4',('time', 'yt', 'xt'))
+tot_cape_out = data_out.createVariable('total cape', 'f4',('time', 'yt', 'xt'))
+tot_cin_out  = data_out.createVariable('total cin',  'f4',('time', 'yt', 'xt'))
+scape_out    = data_out.createVariable('scape',  'f4',('time', 'yt', 'xt'))
+lscape_out   = data_out.createVariable('lscape',  'f4',('time', 'yt', 'xt'))
+lcl_out      = data_out.createVariable('lcl',  'f4',('time', 'yt', 'xt'))
+lfc_out      = data_out.createVariable('lfc',  'f4',('time', 'yt', 'xt'))
+loc_out      = data_out.createVariable('loc',  'f4',('time', 'yt', 'xt'))
+ncross_out   = data_out.createVariable('ncross',  'f4',('time', 'yt', 'xt'))
 
 # attributes long_name and unit
 time_out.long_name = 'time'
